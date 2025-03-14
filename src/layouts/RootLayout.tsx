@@ -4,8 +4,8 @@ import Navbar from '../components/Navbar'
 const RootLayout = () => {
   return (
     <div>
-      <Navbar />
-      <div className="container mx-auto px-4">
+      <Navbar/>
+      <div className='pt-15'>
         <Outlet />
       </div>
     </div>
