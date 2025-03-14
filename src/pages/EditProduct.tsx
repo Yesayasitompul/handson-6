@@ -1,33 +1,46 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+// Imports the useMutation and useQuery hooks from react-query for handling mutations and queries.
 import { useEffect } from "react";
+// Imports the useEffect hook from React for performing side effects in function components.
 import { useNavigate, useParams } from "react-router-dom";
+// Imports the useNavigate and useParams hooks from react-router-dom for programmatic navigation and accessing route parameters.
 import ProductForm, { ProductFormInput } from "../components/ProductForm";
+// Imports the ProductForm component and the ProductFormInput type from the components directory.
 import axios from "../utils/AxiosInstansce";
-import {fetchProductDetail} from "./ProductDetail";
+// Imports a custom axios instance for making HTTP requests.
+import { fetchProductDetail } from "./ProductDetail";
+// Imports the fetchProductDetail function from the ProductDetail module.
 
 const editProduct = async (data: ProductFormInput, id: string | undefined) => {
   return await axios.put(`/products/${id}`, data);
 };
+// Defines an asynchronous function editProduct that takes a ProductFormInput object and an id as input and sends a PUT request to update the product.
 
 const EditProduct = () => {
-  // buat ngambil id dari link
-  // misal linknya udh di setup kyk gini ==> recipe/:id dan current url ==> recipe/12
-  // maka useParam bakalan ngasih object dari semua parameter urlnya
-  // dicth diatas paramter urlnya cmn id, id yg kena return == 12 
   const { id } = useParams();
+  // Uses the useParams hook to get the id parameter from the route.
+
   const editProductMutation = useMutation({
     mutationFn: (data: ProductFormInput) => editProduct(data, id)
   });
+  // Uses the useMutation hook to create a mutation for editing a product. The mutation function is editProduct.
+
   const getProductDetail = useQuery({
     queryKey: ["productDetail", id],
     queryFn: () => fetchProductDetail(id)
   });
+  // Uses the useQuery hook to fetch the product details. The queryKey is "productDetail" and the query function is fetchProductDetail.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
+
   useEffect(() => {
     if (editProductMutation.isSuccess) {
       navigate("/product", { replace: true });
     }
   }, [editProductMutation.isSuccess]);
+  // Uses the useEffect hook to navigate to the product page if the mutation is successful.
+
   return (
     <div className="relative">
       {(editProductMutation.isPending || getProductDetail.isFetching) && (
@@ -65,6 +78,8 @@ const EditProduct = () => {
       />
     </div>
   );
+  // Renders the EditProduct component. If the mutation is pending or the product details are being fetched, it shows a loading overlay. It also renders the ProductForm component, passing the mutate function, isEdit prop, and defaultInputData prop.
 };
 
 export default EditProduct;
+// Exports the EditProduct component as the default export.

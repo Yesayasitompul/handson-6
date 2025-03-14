@@ -1,8 +1,11 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
+// Imports the useMutation and useQuery hooks from react-query for handling mutations and queries.
 import { useNavigate, useParams } from "react-router-dom";
+// Imports the useNavigate and useParams hooks from react-router-dom for programmatic navigation and accessing route parameters.
 import axios from "../utils/AxiosInstansce";
+// Imports a custom axios instance for making HTTP requests.
 import { useEffect } from "react";
-
+// Imports the useEffect hook from React for performing side effects in function components.
 
 interface RecipeDetails {
   id: number;
@@ -21,22 +24,23 @@ interface RecipeDetails {
   rating: number;
   mealType: string[];
 }
-
+// Defines a TypeScript interface for the RecipeDetails object, specifying the structure of the recipe details data.
 
 interface DeletedRecipe extends RecipeDetails {
   isDeleted: Boolean;
   deletedOn: string;
 }
+// Defines a TypeScript interface for the DeletedRecipe object, extending RecipeDetails and adding isDeleted and deletedOn properties.
 
 export const fetchRecipeDetail = async (id: string | undefined) => {
   return await axios.get<RecipeDetails>(`/recipes/${id}`);
 };
+// Defines an asynchronous function fetchRecipeDetail that takes an id as input and sends a GET request to fetch the recipe details.
 
 const deleteRecipe = async (id: string | undefined) => {
   return await axios.delete<DeletedRecipe>(`recipes/${id}`);
 };
-
-
+// Defines an asynchronous function deleteRecipe that takes an id as input and sends a DELETE request to delete the recipe.
 
 const RecipeDetailSkeleton = () => {
   return (
@@ -47,12 +51,10 @@ const RecipeDetailSkeleton = () => {
           <div className="flex flex-col gap-2">
             <div className="flex items-end justify-between">
               <div className="w-[380px] rounded-2xl h-7 bg-gray-300 animate-pulse"></div>
-              
             </div>
             <div className="flex justify-between text-gray-700">
               <div className="w-[100px] rounded-2xl h-6 bg-gray-300 animate-pulse"></div>
               <div className="w-[150px] rounded-2xl h-6 bg-gray-300 animate-pulse"></div>
-              
             </div>
           </div>
           <div className="flex justify-between text-gray-700 items-center">
@@ -71,8 +73,6 @@ const RecipeDetailSkeleton = () => {
           </div>
           <div className="w-[110px] rounded-2xl h-6 bg-gray-300 animate-pulse"></div>
         </div>
-
-
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-7">
@@ -85,14 +85,12 @@ const RecipeDetailSkeleton = () => {
             <div className="w-[180px] rounded-2xl h-6 bg-gray-300 animate-pulse"></div>
           </div>
         </div>
-          
-        <div className="flex flex-col bg-gray-300 animate-pulse text-white px-4 py-7 rounded-2xl md:w-2xl md:order-first h-[20rem]">
-        </div>
+        <div className="flex flex-col bg-gray-300 animate-pulse text-white px-4 py-7 rounded-2xl md:w-2xl md:order-first h-[20rem]"></div>
       </div>
     </div>
   );
 };
-
+// Defines a functional component RecipeDetailSkeleton that renders a skeleton loader for recipe details while data is being fetched.
 
 const RecipeContent: React.FC<RecipeDetails> = (recipe: RecipeDetails) => {
   return (
@@ -118,14 +116,12 @@ const RecipeContent: React.FC<RecipeDetails> = (recipe: RecipeDetails) => {
             <div className="flex justify-between text-gray-700">
               <p>{recipe.cuisine}</p>
               <div className="flex">
-                {
-                  recipe.mealType.map((type, index) => {
-                    if (index == recipe.mealType.length - 1) {
-                      return <p>{type}</p>
-                    }
-                    return <p>{type},</p>
-                  })
-                }
+                {recipe.mealType.map((type, index) => {
+                  if (index == recipe.mealType.length - 1) {
+                    return <p>{type}</p>;
+                  }
+                  return <p>{type},</p>;
+                })}
               </div>
             </div>
           </div>
@@ -142,74 +138,71 @@ const RecipeContent: React.FC<RecipeDetails> = (recipe: RecipeDetails) => {
           <div className="flex justify-between text-gray-700">
             <p>Tags : </p>
             <div className="flex gap-0.5">
-              {
-                recipe.tags.map((tag, index) => {
-                  if (index == recipe.tags.length - 1) return <p>{tag}</p>
-                  return <p>{tag},</p>
-                })
-              }
+              {recipe.tags.map((tag, index) => {
+                if (index == recipe.tags.length - 1) return <p>{tag}</p>;
+                return <p>{tag},</p>;
+              })}
             </div>
           </div>
           <p className="text-gray-700">Servings : {recipe.servings} ({recipe.caloriesPerServing * recipe.servings}.Cal)</p>
         </div>
-
-
       </div>
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-7">
         <div className="flex flex-col gap-2">
           <p className="font-bold text-2xl">Ingredients</p>
           <div className="flex flex-col text-gray-700 gap-1">
-            {
-              recipe.ingredients.map((ingredient) => {
-                return <p>- {ingredient}</p>
-              })
-            }
+            {recipe.ingredients.map((ingredient) => {
+              return <p>- {ingredient}</p>;
+            })}
           </div>
         </div>
         <div className="flex flex-col bg-gray-700 text-white px-4 py-7 rounded-2xl md:w-2xl md:order-first">
           <p className="font-bold text-2xl mb-5">• Instructions</p>
           <div className="flex flex-col text-white gap-2">
-            {
-              recipe.instructions.map((step, index) => {
-                return (
-                  <>
-                    <p>{index + 1}) {step}</p>
-                    <hr />
-                  </>
-                )
-              })
-            }
+            {recipe.instructions.map((step, index) => {
+              return (
+                <>
+                  <p>{index + 1}) {step}</p>
+                  <hr />
+                </>
+              );
+            })}
           </div>
         </div>
       </div>
     </div>
   );
-}
-
-
+};
+// Defines a functional component RecipeContent that renders the details of a recipe.
 
 const RecipesDetail = () => {
   const { id } = useParams();
-  
+  // Uses the useParams hook to get the id parameter from the route.
+
   const getRecipeDetails = useQuery({
     queryKey: ["recipeDetail", id],
     queryFn: () => fetchRecipeDetail(id)
   });
-  
+  // Uses the useQuery hook to fetch the recipe details. The queryKey is "recipeDetail" and the query function is fetchRecipeDetail.
+
   const deleteRecipeMutation = useMutation({
     mutationFn: () => deleteRecipe(id)
   });
+  // Uses the useMutation hook to create a mutation for deleting a recipe. The mutation function is deleteRecipe.
 
   const recipe: RecipeDetails | undefined = getRecipeDetails.data?.data;
-  
+  // Extracts the recipe details from the query data.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
 
   useEffect(() => {
     if (deleteRecipeMutation.isSuccess) {
       navigate("/recipes", { replace: true });
     }
   }, [deleteRecipeMutation.isSuccess]);
+  // Uses the useEffect hook to navigate to the recipes page if the delete mutation is successful.
 
   return (
     <div className="p-5">
@@ -218,6 +211,7 @@ const RecipesDetail = () => {
       ) : (
         <RecipeContent {...recipe} />
       )}
+      {/* Renders the RecipeDetailSkeleton component if the recipe details are being fetched or undefined. Otherwise, renders the RecipeContent component with the recipe details. */}
       <div className="fixed bottom-4 right-4 z-50">
         <div className="relative group">
           <button className="bg-blue-500 text-white rounded-full p-3 shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-300 z-10">
@@ -258,8 +252,10 @@ const RecipesDetail = () => {
           </div>
         </div>
       </div>
+      {/* Renders a button for editing or deleting the recipe. The delete button triggers the delete mutation. */}
     </div>
   );
 };
 
-export default RecipesDetail
+export default RecipesDetail;
+// Exports the RecipesDetail component as the default export.

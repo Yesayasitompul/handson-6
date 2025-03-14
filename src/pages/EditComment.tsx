@@ -1,49 +1,57 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
+// Imports the useMutation and useQuery hooks from react-query for handling mutations and queries.
 import axios from '../utils/AxiosInstansce';
-import { useEffect } from 'react'
+// Imports a custom axios instance for making HTTP requests.
+import { useEffect } from 'react';
+// Imports the useEffect hook from React for performing side effects in function components.
 import { useNavigate, useParams } from 'react-router-dom';
+// Imports the useNavigate and useParams hooks from react-router-dom for programmatic navigation and accessing route parameters.
 import CommentFrom from '../components/CommentForm';
-
+// Imports the CommentForm component for rendering the form to edit a comment.
 
 interface Comment {
-  body : string,
-  postId : number,
-  user : {
-    id : number
+  body: string,
+  postId: number,
+  user: {
+    id: number
   }
 }
+// Defines a TypeScript interface for the Comment object, specifying the structure of the comment data.
 
-
-const CommentEdit = async (data : Comment, id : string | undefined) =>{
+const CommentEdit = async (data: Comment, id: string | undefined) => {
   return await axios.put(`comments/${id}`, data);
-}
+};
+// Defines an asynchronous function CommentEdit that takes a Comment object and an id as input and sends a PUT request to update the comment.
 
 const fetchCommentDat = (id: string | undefined) => {
   return axios.get<Comment>(`/comments/${id}`);
-}
+};
+// Defines an asynchronous function fetchCommentDat that takes an id as input and sends a GET request to fetch the comment data.
 
 const EditComment = () => {
-
   const { id } = useParams();
-
-  
+  // Uses the useParams hook to get the id parameter from the route.
 
   const getTodoDat = useQuery({
     queryKey: ["CommentDat", id],
     queryFn: () => fetchCommentDat(id)
   });
-
+  // Uses the useQuery hook to fetch the comment data. The queryKey is "CommentDat" and the query function is fetchCommentDat.
 
   const { mutate, isSuccess, isPending } = useMutation({
-    mutationFn: (data : Comment) => CommentEdit(data,id)
+    mutationFn: (data: Comment) => CommentEdit(data, id)
   });
+  // Uses the useMutation hook to create a mutation for editing a comment. The mutation function is CommentEdit.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
 
   useEffect(() => {
     if (isSuccess) {
       navigate("/comments", { replace: true });
     }
   }, [isSuccess]);
+  // Uses the useEffect hook to navigate to the comments page if the mutation is successful.
 
   return (
     <div className="relative">
@@ -77,7 +85,9 @@ const EditComment = () => {
       <h2 className="text-2xl font-bold mb-6 mt-32 text-center">Edit Comment</h2>
       <CommentFrom isEdit={true} mutateFn={mutate} defaultInputData={getTodoDat.data?.data} />
     </div>
-    );
+  );
+  // Renders the EditComment component. If the mutation is pending, it shows a loading overlay. It also renders the CommentForm component, passing the mutate function, isEdit prop, and defaultInputData prop.
 }
 
-export default EditComment
+export default EditComment;
+// Exports the EditComment component as the default export.

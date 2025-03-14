@@ -1,22 +1,28 @@
 import { useQuery } from "@tanstack/react-query";
+// Imports the useQuery hook from react-query for handling queries.
 import axios from "../utils/AxiosInstansce";
+// Imports a custom axios instance for making HTTP requests.
 import { useNavigate } from "react-router-dom";
+// Imports the useNavigate hook from react-router-dom for programmatic navigation.
 
 interface Product {
   id: number;
   title: string;
   description: string;
   price: number;
-  thumbnail: string
+  thumbnail: string;
 }
+// Defines a TypeScript interface for the Product object, specifying the structure of the product data.
 
 interface ProductData {
-  products: Product[]
+  products: Product[];
 }
+// Defines a TypeScript interface for the ProductData object, specifying that it contains an array of Product objects.
 
 const fetchProductList = async () => {
-  return await axios.get<ProductData>("/product")
-}
+  return await axios.get<ProductData>("/product");
+};
+// Defines an asynchronous function fetchProductList that sends a GET request to fetch the list of products.
 
 const ProductSkeleton = () => {
   return (
@@ -37,10 +43,15 @@ const ProductSkeleton = () => {
     </div>
   );
 };
+// Defines a functional component ProductSkeleton that renders a skeleton loader for products while data is being fetched.
 
 const Product = () => {
-  const getProductList = useQuery({ queryKey: ["productList"], queryFn: fetchProductList })
+  const getProductList = useQuery({ queryKey: ["productList"], queryFn: fetchProductList });
+  // Uses the useQuery hook to fetch the list of products. The queryKey is "productList" and the query function is fetchProductList.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
+
   return (
     <div className="container mx-auto px-4">
       <button className="z-10 fixed bottom-4 right-4 bg-blue-500 text-white rounded-full p-4 shadow-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" onClick={() => navigate("./add")}>
@@ -48,13 +59,17 @@ const Product = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
         </svg>
       </button>
+      {/* Renders a button that navigates to the "Add Product" page when clicked. */}
+
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">List of Products</h2>
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {getProductList.isFetching ? (Array.from({ length: 4 }).map((_, index) => (
-              <ProductSkeleton key={index} />
-            ))) : (
+            {getProductList.isFetching ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <ProductSkeleton key={index} />
+              ))
+            ) : (
               getProductList.data?.data.products.map((product) => (
                 <div key={product.id} className="group relative" onClick={() => navigate(`/product/${product.id}`)}>
                   <img
@@ -81,7 +96,9 @@ const Product = () => {
         </div>
       </div>
     </div>
-  )
+  );
+  // Renders the Product component. If the product list is being fetched, it shows skeleton loaders. Otherwise, it displays the list of products. Each product card navigates to the product detail page when clicked.
 }
 
-export default Product
+export default Product;
+// Exports the Product component as the default export.

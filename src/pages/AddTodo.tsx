@@ -1,32 +1,41 @@
 import { useMutation } from '@tanstack/react-query';
+// Imports the useMutation hook from react-query for handling mutations (e.g., POST requests).
 import axios from '../utils/AxiosInstansce';
-import { useEffect } from 'react'
+// Imports a custom axios instance for making HTTP requests.
+import { useEffect } from 'react';
+// Imports the useEffect hook from React for performing side effects in function components.
 import { useNavigate } from 'react-router-dom';
+// Imports the useNavigate hook from react-router-dom for programmatic navigation.
 import TodoForm from '../components/TodoForm';
-
+// Imports the TodoForm component for rendering the form to add a todo.
 
 interface Todo {
-  todo : string,
-  completed : boolean,
-  userId : number
+  todo: string,
+  completed: boolean,
+  userId: number
 }
+// Defines a TypeScript interface for the Todo object, specifying the structure of the todo data.
 
-
-const TodoAdd = async (data : Todo) =>{
+const TodoAdd = async (data: Todo) => {
   return await axios.post("/todo/add", data);
-}
+};
+// Defines an asynchronous function TodoAdd that takes a Todo object as input and sends a POST request to add the todo.
 
 const AddTodo = () => {
   const { mutate, isSuccess, isPending } = useMutation({
     mutationFn: TodoAdd
   });
+  // Uses the useMutation hook to create a mutation for adding a todo. The mutate function triggers the mutation, and isSuccess and isPending indicate the mutation's status.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
 
   useEffect(() => {
     if (isSuccess) {
       navigate("/todo", { replace: true });
     }
   }, [isSuccess]);
+  // Uses the useEffect hook to navigate to the todo page if the mutation is successful.
 
   return (
     <div className="relative">
@@ -60,7 +69,9 @@ const AddTodo = () => {
       <h2 className="text-2xl font-bold mb-6 mt-25 text-center">Add Todo</h2>
       <TodoForm isEdit={false} mutateFn={mutate} />
     </div>
-    );
+  );
+  // Renders the AddTodo component. If the mutation is pending, it shows a loading overlay. It also renders the TodoForm component, passing the mutate function and isEdit prop.
 }
 
-export default AddTodo
+export default AddTodo;
+// Exports the AddTodo component as the default export.

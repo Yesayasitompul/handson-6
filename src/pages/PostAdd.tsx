@@ -1,39 +1,51 @@
 import { useMutation } from '@tanstack/react-query';
+// Imports the useMutation hook from react-query for handling mutations.
 import axios from '../utils/AxiosInstansce';
-import { useEffect } from 'react'
+// Imports a custom axios instance for making HTTP requests.
+import { useEffect } from 'react';
+// Imports the useEffect hook from React for performing side effects in function components.
 import { useNavigate } from 'react-router-dom';
+// Imports the useNavigate hook from react-router-dom for programmatic navigation.
 import PostForm from '../components/PostForm';
+// Imports the PostForm component for rendering the form to add a post.
 
-interface postDat{
-  title : string;
-  body : string;
-  tags : string[];
-  reactions : reactionType;
-  views : number;
-  userId : number;
+interface postDat {
+  title: string;
+  body: string;
+  tags: string[];
+  reactions: reactionType;
+  views: number;
+  userId: number;
 }
+// Defines a TypeScript interface for the postDat object, specifying the structure of the post data.
 
 interface reactionType {
-  likes: number,
-  dislikes: number
+  likes: number;
+  dislikes: number;
 }
+// Defines a TypeScript interface for the reactionType object, specifying the structure of the reactions data.
 
-const addPost = async (data : postDat) =>{
+const addPost = async (data: postDat) => {
   return await axios.post("/posts/add", data);
-}
+};
+// Defines an asynchronous function addPost that takes a postDat object as input and sends a POST request to add a new post.
 
 const PostAdd = () => {
   const { mutate, isSuccess, isPending } = useMutation({
     mutationFn: addPost
   });
+  // Uses the useMutation hook to create a mutation for adding a post. The mutation function is addPost.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
 
   useEffect(() => {
-    console.log("test")
+    console.log("test");
     if (isSuccess) {
       navigate("/posts", { replace: true });
     }
   }, [isSuccess]);
+  // Uses the useEffect hook to navigate to the posts page if the mutation is successful.
 
   return (
     <div className="relative">
@@ -67,7 +79,9 @@ const PostAdd = () => {
       <h2 className="text-2xl font-bold mb-6 mt-10 text-center">Add Post</h2>
       <PostForm isEdit={false} mutateFn={mutate} />
     </div>
-    );
+  );
+  // Renders the PostAdd component. If the mutation is pending, it shows a loading overlay. It also renders the PostForm component, passing the mutate function and setting isEdit to false.
 }
 
-export default PostAdd
+export default PostAdd;
+// Exports the PostAdd component as the default export.

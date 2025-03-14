@@ -1,7 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
+// Imports the useQuery hook from react-query for handling queries.
 import axios from "../utils/AxiosInstansce";
+// Imports a custom axios instance for making HTTP requests.
 import { useNavigate } from "react-router-dom";
-
+// Imports the useNavigate hook from react-router-dom for programmatic navigation.
 
 interface Recipe {
   id: number;
@@ -10,10 +12,12 @@ interface Recipe {
   image: string;
   rating: number;
 }
+// Defines a TypeScript interface for the Recipe object, specifying the structure of the recipe data.
 
 interface RecipesList {
   recipes: Recipe[];
 }
+// Defines a TypeScript interface for the RecipesList object, specifying that it contains an array of Recipe objects.
 
 const RecipeCard: React.FC<Recipe> = (recipe: Recipe) => {
   return (
@@ -23,6 +27,7 @@ const RecipeCard: React.FC<Recipe> = (recipe: Recipe) => {
         src={recipe.image}
         className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80"
       />
+      {/* Renders the recipe image. */}
 
       <div className="mt-4 flex justify-between">
         <div>
@@ -32,6 +37,7 @@ const RecipeCard: React.FC<Recipe> = (recipe: Recipe) => {
               {recipe.name}
             </a>
           </h3>
+          {/* Renders the recipe name. */}
           <div className="flex items-end gap-2">
             <p className="mt-1 text-sm text-gray-500">{recipe.rating}</p>
             <svg
@@ -42,17 +48,21 @@ const RecipeCard: React.FC<Recipe> = (recipe: Recipe) => {
             >
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.176 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
             </svg>
+            {/* Renders the recipe rating with a star icon. */}
           </div>
         </div>
         <p className="text-sm font-medium text-gray-900">{recipe.difficulty}</p>
+        {/* Renders the recipe difficulty. */}
       </div>
     </>
   );
-}
+};
+// Defines a functional component RecipeCard that renders the details of a recipe.
 
 const fetchRecipesList = async () => {
   return await axios.get<RecipesList>("/recipes");
-}
+};
+// Defines an asynchronous function fetchRecipesList that sends a GET request to fetch the list of recipes.
 
 const RecipesSkeleton = () => {
   return (
@@ -73,10 +83,14 @@ const RecipesSkeleton = () => {
     </div>
   );
 };
+// Defines a functional component RecipesSkeleton that renders a skeleton loader for recipes while data is being fetched.
 
 const Recipes = () => {
-  const getRecipesList = useQuery({ queryKey: ["recipeList"], queryFn: fetchRecipesList })
+  const getRecipesList = useQuery({ queryKey: ["recipeList"], queryFn: fetchRecipesList });
+  // Uses the useQuery hook to fetch the list of recipes. The queryKey is "recipeList" and the query function is fetchRecipesList.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
 
   return (
     <div className="container mx-auto px-4">
@@ -85,13 +99,17 @@ const Recipes = () => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4"></path>
         </svg>
       </button>
+      {/* Renders a button that navigates to the "Add Recipe" page when clicked. */}
+
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">List of Recipes</h2>
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {getRecipesList.isFetching ? (Array.from({ length: 4 }).map((_, index) => (
-              <RecipesSkeleton key={index} />
-            ))) : (
+            {getRecipesList.isFetching ? (
+              Array.from({ length: 4 }).map((_, index) => (
+                <RecipesSkeleton key={index} />
+              ))
+            ) : (
               getRecipesList.data?.data.recipes.map((recipe) => (
                 <div key={recipe.id} className="group relative" onClick={() => navigate(`/recipes/${recipe.id}`)}>
                   <RecipeCard {...recipe} />
@@ -102,8 +120,9 @@ const Recipes = () => {
         </div>
       </div>
     </div>
-  )
+  );
+  // Renders the Recipes component. If the recipe list is being fetched, it shows skeleton loaders. Otherwise, it displays the list of recipes. Each recipe card navigates to the recipe detail page when clicked.
 }
 
-
-export default Recipes
+export default Recipes;
+// Exports the Recipes component as the default export.

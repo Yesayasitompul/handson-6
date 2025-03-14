@@ -1,24 +1,33 @@
 import { useMutation } from "@tanstack/react-query";
+// Imports the useMutation hook from react-query for handling mutations (e.g., POST requests).
 import axios from "../utils/AxiosInstansce";
+// Imports a custom axios instance for making HTTP requests.
 import { useEffect } from "react";
+// Imports the useEffect hook from React for performing side effects in function components.
 import { useNavigate } from "react-router-dom";
+// Imports the useNavigate hook from react-router-dom for programmatic navigation.
 import RecipeForm, { Recipe } from "../components/RecipesForm";
-
+// Imports the RecipeForm component and the Recipe type from the components directory.
 const addRecipe = async (data: Recipe) => {
   return await axios.post("/recipes/add", data);
 };
+// Defines an asynchronous function addRecipe that takes a Recipe object as input and sends a POST request to add the recipe.
 
 const AddRecipes = () => {
-
   const { mutate, isSuccess, isPending } = useMutation({
     mutationFn: addRecipe
   });
+  // Uses the useMutation hook to create a mutation for adding a recipe. The mutate function triggers the mutation, and isSuccess and isPending indicate the mutation's status.
+
   const navigate = useNavigate();
+  // Uses the useNavigate hook to get a navigate function for programmatic navigation.
+
   useEffect(() => {
     if (isSuccess) {
       navigate("/recipes", { replace: true });
     }
   }, [isSuccess]);
+  // Uses the useEffect hook to navigate to the recipes page if the mutation is successful.
 
   return (
     <div className="relative">
@@ -52,7 +61,9 @@ const AddRecipes = () => {
       <h2 className="text-2xl font-bold mb-6 mt-10 text-center">Add Recipe</h2>
       <RecipeForm isEdit={false} mutateFn={mutate} />
     </div>
-  )
-}
+  );
+  // Renders the AddRecipes component. If the mutation is pending, it shows a loading overlay. It also renders the RecipeForm component, passing the mutate function and isEdit prop.
+};
 
 export default AddRecipes;
+// Exports the AddRecipes component as the default export.
